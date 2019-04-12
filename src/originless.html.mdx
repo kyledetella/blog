@@ -1,0 +1,34 @@
+import Layout from "./components/Layout.jsx";
+
+export const meta = {
+  date: "2019/01/28",
+  title: "Originless"
+};
+
+# Cloudflare Originless setup
+
+When CloudFlare Workers first came out, I was super excited but didn’t really have a use case in mind. However, after listening to a podcast with the architect of Workers about the next evolution of serverless being “originless”, I decided to give them a try.
+
+The most straightforward applicable use case for me was ataticnsite hosting. The example from the Cloudflare docs demonstrates pulling resources from a Digital Ocean space to hydrate the Cloudflare cache using a worker. So, on the first request for a resource , the script delegates to the downstream resource (in this case, DigitalOcean) and on subsequent requests, the asset is served from the edge cache. Setting this up was a breeze and everything worked great, but what they don’t tell you is how to bring your own domain when pulling this off.
+
+My domain (detella.com) was registered with Namecheap and I needed to point it to Cloudflare for use with a worker.
+
+[Image]
+
+Setting up the nameservers worked like a charm, but since I didn’t plan on having an origin to host my site, I was unsure where to point the IP address for the CNAME and A records (TODO: verify these fields). After a ton of googling, I decided to try to use Cloudflare’s new (at the time) 1.1.1.1 IP…guess what, that’s all I had to do! Since 1.1.1.1 resolves to Cloudflare’s services it was a natural ingress for pointing my domain to the worker.
+
+## Subdomains
+
+Without the enterprise plan you are limited to one worker per domain. However, I also decided to use Workers to handle functionality for sub domains.
+
+By inspecting the request, it becomes trivial to switch on the subdomain and provide the necessary response via Workers.
+
+[Code Snippet] (show one pulling from s3, one from DO spaces, and one returning inline html)
+
+## The price of experimentation
+
+While this technology is extremely exciting, it certainly isn’t the cheapest solution out there. The reality is, you can achieve basically the same thing (static site + CDN) with S3+Cloudfront or Zeit now for < $1/mo. With Cloudflare Workers and DigitalOcean Spaces you will need to drop $5/mo for each service respectively.
+
+For me, this was an exciting opportunity to explore Workers and see what they can do and I think that’s worth the cost, at least in the short term. Serverless, originless, FaaS, whatever you call it – these technologies are part of our future and it’s important to explore them wherever we can.
+
+export default ({ children }) => <Layout>{children}</Layout>;

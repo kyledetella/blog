@@ -1,0 +1,14 @@
+import Layout from "./components/Layout.jsx";
+
+export const meta = {
+  date: "2019/01/28",
+  title: "First post!"
+};
+
+Everything between the import and export in the source is **just markdown** using [MDX](https://mdxjs.com/)!
+
+// export default ({ children }) => <>{children}</>;
+
+export default ({ children }) => <Layout>{children}</Layout>;
+
+;
